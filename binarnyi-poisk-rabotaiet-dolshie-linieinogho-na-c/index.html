@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Бинарный поиск работает дольше линейного на C++?</title>
+
+    <link rel="stylesheet" href="../assets/built/screen.css@v=aeacdf8ba6.css">
+
+    <link rel="canonical" href="index.html" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Блог Любителя Компьютеров" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Бинарный поиск работает дольше линейного на C++?" />
+    <meta property="og:description" content="Я продолжаю осваиваться в своём втором языке - C++. Сегодня попалась олимпиадная задачка на создание БД с полями логина, пароля и статусом входа. Цель - вывести результаты на каждый из запросов: создание пользователя[логин, пароль], вход[логин, пароль] и выход[логин].
+
+Спустя 6 часов я смог написать 3 реализации программы:" />
+    <meta property="og:url" content="http://localhost:2368/binarnyi-poisk-rabotaiet-dolshie-linieinogho-na-c/" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;2000" />
+    <meta property="article:published_time" content="2022-11-28T18:32:00.000Z" />
+    <meta property="article:modified_time" content="2022-11-28T18:33:59.000Z" />
+    <meta property="article:tag" content="C++" />
+    <meta property="article:tag" content="IT суета" />
+    
+    <meta property="article:publisher" content="https://www.facebook.com/ghost" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Бинарный поиск работает дольше линейного на C++?" />
+    <meta name="twitter:description" content="Я продолжаю осваиваться в своём втором языке - C++. Сегодня попалась олимпиадная задачка на создание БД с полями логина, пароля и статусом входа. Цель - вывести результаты на каждый из запросов: создание пользователя[логин, пароль], вход[логин, пароль] и выход[логин].
+
+Спустя 6 часов я смог написать 3 реализации программы:" />
+    <meta name="twitter:url" content="http://localhost:2368/binarnyi-poisk-rabotaiet-dolshie-linieinogho-na-c/" />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;2000" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Кирилл Байтов" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="C++, IT суета" />
+    <meta name="twitter:site" content="@ghost" />
+    <meta property="og:image:width" content="2000" />
+    <meta property="og:image:height" content="1333" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Блог Любителя Компьютеров",
+        "url": "http://localhost:2368/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "http://localhost:2368/favicon.ico",
+            "width": 48,
+            "height": 48
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Кирилл Байтов",
+        "url": "http://localhost:2368/author/kirill/",
+        "sameAs": []
+    },
+    "headline": "Бинарный поиск работает дольше линейного на C++?",
+    "url": "http://localhost:2368/binarnyi-poisk-rabotaiet-dolshie-linieinogho-na-c/",
+    "datePublished": "2022-11-28T18:32:00.000Z",
+    "dateModified": "2022-11-28T18:33:59.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&ixlib=rb-4.0.3&q=80&w=2000",
+        "width": 2000,
+        "height": 1333
+    },
+    "keywords": "C++, IT суета",
+    "description": "Я продолжаю осваиваться в своём втором языке - C++. Сегодня попалась олимпиадная задачка на создание БД с полями логина, пароля и статусом входа. Цель - вывести результаты на каждый из запросов: создание пользователя[логин, пароль], вход[логин, пароль] и выход[логин].\n\nСпустя 6 часов я смог написать 3 реализации программы:\n\n\n 1. Линейный поиск по вектору из структур[логин, пароль, статус]:\n    \n    for (int i &#x3D; 0; i &lt; db.size(); ++i) //vector db\n        if (db[i].login &#x3D;&#x3D; user.login\n            ",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://localhost:2368/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 5.22" />
+    <link rel="alternate" type="application/rss+xml" title="Блог Любителя Компьютеров" href="../rss/index.html" />
+    
+    <script defer src="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/sodo-search.min.js" data-key="8274374d9c7ccb37dc8effdf28" data-styles="https://cdn.jsdelivr.net/ghost/sodo-search@~1.1/umd/main.css" data-sodo-search="http://localhost:2368/" crossorigin="anonymous"></script><style>:root {--ghost-accent-color: #1b9d1e;}</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-tomorrow.min.css" integrity="sha512-vswe+cgvic/XBoF1OcM/TeJ2FW0OofqAVdCZiEYkd6dwGXthvkSFWOoGGJgS2CW70VK5dQM5Oh+7ne47s74VTg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="post-template tag-cpp tag-it-suieta is-head-left-logo is-head-brand">
+<div class="site">
+
+    <header id="gh-head" class="gh-head gh-outer">
+        <div class="gh-head-inner">
+            <div class="gh-head-brand">
+                <div class="gh-head-brand-wrapper">
+                    <a class="gh-head-logo" href="../index.html">
+                            Блог Любителя Компьютеров
+                    </a>
+                </div>
+                <button class="gh-search gh-icon-btn" data-ghost-search><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+                <button class="gh-burger"></button>
+            </div>
+
+            <nav class="gh-head-menu">
+                <ul class="nav">
+    <li class="nav-home"><a href="../index.html">Home</a></li>
+    <li class="nav-about"><a href="../about/index.html">About</a></li>
+</ul>
+
+            </nav>
+
+            <div class="gh-head-actions">
+                        <button class="gh-search gh-icon-btn" data-ghost-search><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="site-content">
+        
+<main class="site-main">
+
+        <article class="single post tag-cpp tag-it-suieta">
+
+    <header class="single-header gh-canvas">
+        <div class="single-meta">
+            <span class="single-meta-item single-meta-date">
+                <time datetime="2022-11-28">
+                    Nov 28, 2022
+                </time>
+            </span>
+            <span class="single-meta-item single-meta-length">
+                1 min read
+            </span>
+                <span class="single-meta-item single-meta-tag">
+                    <a class="post-tag post-tag-cpp" href="../tag/cpp/index.html">C++</a>
+                </span>
+        </div>
+
+        <h1 class="single-title">Бинарный поиск работает дольше линейного на C++?</h1>
+
+
+            <figure class="single-media kg-width-wide">
+                <img srcset="https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;400 400w,
+https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;750 750w,
+https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;960 960w,
+https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;1140 1140w" sizes="(min-width: 1023px) 920px, calc(90vw)" src="https://images.unsplash.com/photo-1596303543588-0ed24c575288?crop&#x3D;entropy&amp;cs&#x3D;tinysrgb&amp;fit&#x3D;max&amp;fm&#x3D;jpg&amp;ixid&#x3D;MnwxMTc3M3wwfDF8c2VhcmNofDUzfHxzZWFyY2h8ZW58MHx8fHwxNjY5NTcyMjc0&amp;ixlib&#x3D;rb-4.0.3&amp;q&#x3D;80&amp;w&#x3D;960" alt="Бинарный поиск работает дольше линейного на C++?">
+                    <figcaption>Photo by <a href="https://unsplash.com/@helibertoarias?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Heliberto Arias</a> / <a href="https://unsplash.com/?utm_source=ghost&utm_medium=referral&utm_campaign=api-credit">Unsplash</a></figcaption>
+            </figure>
+    </header>
+
+    <div class="single-content gh-content gh-canvas">
+        <p>Я продолжаю осваиваться в своём втором языке - C++. Сегодня попалась олимпиадная задачка на создание БД с полями логина, пароля и статусом входа. Цель - вывести результаты на каждый из запросов: создание пользователя[логин, пароль], вход[логин, пароль] и выход[логин]. </p><!--kg-card-begin: markdown--><p>Спустя 6 часов я смог написать 3 реализации программы:</p>
+<ol>
+<li>Линейный поиск по вектору из структур[логин, пароль, статус]:<pre><code class="language-cpp">for (int i = 0; i &lt; db.size(); ++i) //vector db
+    if (db[i].login == user.login
+        if (db[i].password == user.password &amp;&amp; db[i].logged == false)
+</code></pre>
+</li>
+<li>Предварительная проверка существования логина в set из логинов, а потом линейный поиск для проверки пароля:<pre><code class="language-cpp">if (binary_search(logins.begin(), logins.end(), user.login)) //set logins
+    for (int i = 0; i &lt; db.size(); ++i)
+        if (db[i].login == user.login)
+            if (db[i].password == user.password &amp;&amp; db[i].logged == false)
+</code></pre>
+</li>
+<li>Хитро-безумный план с одним set для хранения строк &quot;login&quot; и сразу же за ней идущей &quot;login0password&quot;:<pre><code class="language-cpp">if (binary_search(logins.begin(), logins.end(), login)) { //set logins
+    //вытаскиваем строчку-пару за логином
+    auto user_data = logins.upper_bound(login); 
+    string user_logged = *user_data;
+    user_logged = user_logged.substr(login.size(), 1);
+    string user_password = *user_data;
+    user_password = user_password.substr(login.size() + 1,
+        user_password.size() - 1 - login.size());    
+    if (password == user_password &amp;&amp; user_logged == &quot;0&quot;) {
+</code></pre>
+</li>
+</ol>
+<!--kg-card-end: markdown--><!--kg-card-begin: markdown--><p>Результаты</p>
+<ol>
+<li>Пройдено тестов 10, TIME_LIMIT на 11;</li>
+<li>Пройдено тестов 9, TIME_LIMIT на 10;</li>
+<li>Пройдено тестов 8, TIME_LIMIT на 9;<br>
+Удивительно, не правда ли? Хотя кто-то уже мог догадаться.</li>
+</ol>
+<pre><code class="language-cpp">binary_search(logins.begin(), logins.end(), login) // неправильно
+logins.lower_bound(login) // правильно
+</code></pre>
+<p>Первый (неродной set) поиск из &lt;algorithm&gt; работает за O[nlog(n)], что дольше линейного поиска. Так происходит из-за попыток найти середину у set перед началом binary_search (узнать размер set - O[n]).<br>
+Второй поиск уже знает, что делает и поэтому работает за O[log(n)].</p>
+<!--kg-card-end: markdown--><blockquote><em>На ошибках учатся.</em></blockquote>
+    </div>
+
+    <div class="gh-canvas">
+    <footer class="single-footer">
+
+        <div class="single-footer-left">
+            <div class="navigation navigation-previous">
+                <a class="navigation-link" href="../kak-ia-nachal-polzovatsia-punto-switcher-v-2022-ghodu/index.html" aria-label="Previous post">
+                    <span class="navigation-icon"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <path d="M26.667 14.667v2.667h-16L18 24.667l-1.893 1.893L5.547 16l10.56-10.56L18 7.333l-7.333 7.333h16z"></path>
+</svg></span>
+                </a>
+            </div>
+        </div>
+
+        <div class="single-footer-middle">
+            <div class="single-footer-top">
+                <h3 class="single-footer-title">Published by:</h3>
+                <div class="author-list">
+                        <div class="author-image-placeholder u-placeholder square">
+                            <a href="../author/kirill/index.html" title="Кирилл Байтов">
+                                    <span class="u-object-fit"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M3.513 18.998C4.749 15.504 8.082 13 12 13s7.251 2.504 8.487 5.998C18.47 21.442 15.417 23 12 23s-6.47-1.558-8.487-4.002zM12 12c2.21 0 4-2.79 4-5s-1.79-4-4-4-4 1.79-4 4 1.79 5 4 5z" fill="#FFF"/></g></svg>
+</span>
+                            </a>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="single-footer-right">
+        </div>
+
+    </footer>
+    </div>
+
+</article>
+            <section class="related-wrapper gh-canvas">
+        <h3 class="related-title">You might also like...</h3>
+        <div class="post-feed related-feed">
+                <article class="feed post" data-month="November 2022">
+
+    <div class="feed-calendar">
+        <div class="feed-calendar-month">
+            Nov
+        </div>
+        <div class="feed-calendar-day">
+            25
+        </div>
+    </div>
+
+        <div class="feed-image u-placeholder rectangle">
+                <img
+                    class="u-object-fit"
+                    srcset="../content/images/size/w400/2022/11/1324624738_punto_switcher_for_mac-2562963952-1.jpg 400w,../content/images/size/w750/2022/11/1324624738_punto_switcher_for_mac-2562963952-1.jpgg 750w../content/images/size/w960/2022/11/1324624738_punto_switcher_for_mac-2562963952-1.jpgpg 960../content/images/size/w1140/2022/11/1324624738_punto_switcher_for_mac-2562963952-1.jpgjpg 1140w"
+                    sizes="(min-width: 576px) 160px, 90vw"
+                    src="../content/images/size/w750/2022/11/1324624738_punto_switcher_for_mac-2562963952-1.jpg"
+                    alt="Как я начал пользоваться Punto Switcher в 2022 году"
+                    loading="lazy"
+                >
+        </div>
+
+    <div class="feed-wrapper">
+        <h2 class="feed-title">Как я начал пользоваться Punto Switcher в 2022 году</h2>
+            <div class="feed-excerpt">Punto Switcher</div>
+        <div class="feed-right">
+            <time class="feed-date" datetime="2022-11-25">
+                Nov 25, 2022
+            </time>
+            <div class="feed-visibility feed-visibility-public">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <path d="M16 23.027L24.24 28l-2.187-9.373 7.28-6.307-9.587-.827-3.747-8.827-3.747 8.827-9.587.827 7.267 6.307L7.759 28l8.24-4.973z"></path>
+</svg>            </div>
+                <div class="feed-length">
+                    1 min read
+                </div>
+            <div class="feed-icon">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+    <path d="M11.453 22.107L17.56 16l-6.107-6.12L13.333 8l8 8-8 8-1.88-1.893z"></path>
+</svg>            </div>
+        </div>
+    </div>
+
+    <a class="u-permalink" href="../kak-ia-nachal-polzovatsia-punto-switcher-v-2022-ghodu/index.html" aria-label="Как я начал пользоваться Punto Switcher в 2022 году"></a>
+
+</article>        </div>
+    </section>
+
+        
+</main>
+    </div>
+
+    <footer class="gh-foot gh-outer">
+        <div class="gh-foot-inner gh-inner">
+            <div class="gh-copyright">
+                Блог Любителя Компьютеров © 2022
+            </div>
+            <nav class="gh-foot-menu">
+                <ul class="nav">
+    <li class="nav-sign-up"><a href="index.html#/portal/">Sign up</a></li>
+</ul>
+
+            </nav>
+            <div class="gh-powered-by">
+                <a href="https://ghost.org/" target="_blank" rel="noopener">Powered by Ghost</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    if (document.body.classList.contains('with-full-cover') && (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) {
+        document.getElementsByClassName('cover')[0].style.height = window.innerHeight + 'px';
+    }
+</script>
+
+<script src="../assets/built/main.min.js@v=aeacdf8ba6"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js" integrity="sha512-9khQRAUBYEJDCDVP2yw3LRUQvjJ0Pjx0EShmaQjcHa6AXiOv6qHQu9lCAIR8O+/D8FtaCoJ2c0Tf9Xo7hYH01Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-fTl/qcO1VgvKtOMApX2PdZzkziyr2stM65GYPLGuYMnuMm1z2JLJG6XVU7C/mR+E7xBUqCivykuhlzfqxXBXbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</body>
+</html>
